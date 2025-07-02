@@ -14,6 +14,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { PanelRightOpen, PanelRightClose } from "lucide-react";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { useAssistantId } from "@/hooks/useAssistantId";
 
 function ThreadList({
   threads,
@@ -81,7 +82,7 @@ export default function ThreadHistory() {
     "chatHistoryOpen",
     parseAsBoolean.withDefault(false),
   );
-  const [assistantId] = useQueryState("assistantId");
+  const [assistantId] = useAssistantId();
 
   const { getThreads, threads, setThreads, threadsLoading, setThreadsLoading } =
     useThreads();
