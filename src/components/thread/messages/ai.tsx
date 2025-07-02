@@ -14,6 +14,7 @@ import { ThreadView } from "../agent-inbox";
 import { useQueryState, parseAsBoolean } from "nuqs";
 import { GenericInterruptView } from "./generic-interrupt";
 import { useArtifact } from "../artifact";
+import { HIDE_TOOL_CALLS } from "@/defaults";
 
 function CustomComponent({
   message,
@@ -106,7 +107,7 @@ export function AssistantMessage({
   const contentString = getContentString(content);
   const [hideToolCalls] = useQueryState(
     "hideToolCalls",
-    parseAsBoolean.withDefault(false),
+    parseAsBoolean.withDefault(HIDE_TOOL_CALLS),
   );
 
   const thread = useStreamContext();

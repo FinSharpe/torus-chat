@@ -81,6 +81,7 @@ export default function ThreadHistory() {
     "chatHistoryOpen",
     parseAsBoolean.withDefault(false),
   );
+  const [assistantId] = useQueryState("assistantId");
 
   const { getThreads, threads, setThreads, threadsLoading, setThreadsLoading } =
     useThreads();
@@ -92,7 +93,7 @@ export default function ThreadHistory() {
       .then(setThreads)
       .catch(console.error)
       .finally(() => setThreadsLoading(false));
-  }, []);
+  }, [assistantId]);
 
   return (
     <>

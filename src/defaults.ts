@@ -1,0 +1,1 @@
+export const HIDE_TOOL_CALLS = true;

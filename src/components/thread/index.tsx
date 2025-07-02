@@ -46,6 +46,7 @@ import {
   ArtifactTitle,
   useArtifactContext,
 } from "./artifact";
+import { HIDE_TOOL_CALLS } from "@/defaults";
 
 function StickyToBottomContent(props: {
   content: ReactNode;
@@ -123,8 +124,9 @@ export function Thread() {
   );
   const [hideToolCalls, setHideToolCalls] = useQueryState(
     "hideToolCalls",
-    parseAsBoolean.withDefault(false),
+    parseAsBoolean.withDefault(HIDE_TOOL_CALLS),
   );
+  const [assistantId, setAssistantId] = useQueryState("assistantId");
   const [input, setInput] = useState("");
   const {
     contentBlocks,
@@ -252,6 +254,13 @@ export function Thread() {
     (m) => m.type === "ai" || m.type === "tool",
   );
 
+  const handleAgentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setThreadId(null);
+    setAssistantId(e.target.value, {
+      history: "push"
+    });
+  };
+
   return (
     <div className="flex h-screen w-full overflow-hidden">
       <div className="relative hidden lg:flex">
@@ -322,9 +331,10 @@ export function Thread() {
                   </Button>
                 )}
               </div>
-              <div className="absolute top-2 right-4 flex items-center">
+              <AgentSelector handleAgentChange={handleAgentChange} chatHistoryOpen={chatHistoryOpen} assistantId={assistantId} />
+              {/* <div className="absolute top-2 right-4 flex items-center">
                 <OpenGitHubRepo />
-              </div>
+              </div> */}
             </div>
           )}
           {chatStarted && (
@@ -345,7 +355,7 @@ export function Thread() {
                     </Button>
                   )}
                 </div>
-                <motion.button
+                {/* <motion.button
                   className="flex cursor-pointer items-center gap-2"
                   onClick={() => setThreadId(null)}
                   animate={{
@@ -357,20 +367,18 @@ export function Thread() {
                     damping: 30,
                   }}
                 >
-                  <LangGraphLogoSVG
-                    width={32}
-                    height={32}
-                  />
                   <span className="text-xl font-semibold tracking-tight">
-                    Agent Chat
+                    Torus Chat
                   </span>
-                </motion.button>
+                </motion.button> */}
+
+                <AgentSelector handleAgentChange={handleAgentChange} chatHistoryOpen={chatHistoryOpen} assistantId={assistantId} />
               </div>
 
               <div className="flex items-center gap-4">
-                <div className="flex items-center">
+                {/* <div className="flex items-center">
                   <OpenGitHubRepo />
-                </div>
+                </div> */}
                 <TooltipIconButton
                   size="lg"
                   className="p-4"
@@ -481,7 +489,7 @@ export function Thread() {
                       />
 
                       <div className="flex items-center gap-6 p-2 pt-4">
-                        <div>
+                        {/* <div>
                           <div className="flex items-center space-x-2">
                             <Switch
                               id="render-tool-calls"
@@ -495,8 +503,8 @@ export function Thread() {
                               Hide Tool Calls
                             </Label>
                           </div>
-                        </div>
-                        <Label
+                        </div> */}
+                        {/* <Label
                           htmlFor="file-input"
                           className="flex cursor-pointer items-center gap-2"
                         >
@@ -512,7 +520,7 @@ export function Thread() {
                           multiple
                           accept="image/jpeg,image/png,image/gif,image/webp,application/pdf"
                           className="hidden"
-                        />
+                        /> */}
                         {stream.isLoading ? (
                           <Button
                             key="stop"
@@ -559,4 +567,40 @@ export function Thread() {
       </div>
     </div>
   );
+}
+
+
+function AgentSelector({ handleAgentChange, chatHistoryOpen, assistantId }: { handleAgentChange: (e: React.ChangeEvent<HTMLSelectElement>) => void, chatHistoryOpen: boolean, assistantId: string | null }) {
+  return <motion.select
+    transition={{
+      type: "spring",
+      stiffness: 300,
+      damping: 30,
+    }}
+    onChange={handleAgentChange}
+    className={cn(
+      "cursor-pointer bg-transparent border-none px-3 py-1 text-lg font-semibold text-gray-900 outline-none transition-colors duration-200 hover:text-gray-700",
+      !chatHistoryOpen ? "ml-10" : "ml-0"
+    )}
+    value={assistantId ?? ""}
+  >
+    <option
+      value="market_analysis_graph"
+      className="py-2 px-4 text-gray-900 bg-white hover:bg-gray-50 font-medium"
+    >
+      📈 Market Analysis
+    </option>
+    <option
+      value="stock_analysis_graph"
+      className="py-2 px-4 text-gray-900 bg-white hover:bg-gray-50 font-medium"
+    >
+      📊 Stock Analysis
+    </option>
+    <option
+      value="portfolio_analysis_agent"
+      className="py-2 px-4 text-gray-900 bg-white hover:bg-gray-50 font-medium"
+    >
+      💼 Portfolio Analysis
+    </option>
+  </motion.select>
 }
